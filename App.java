@@ -15,6 +15,10 @@ public class App {
         return c == ')' || c == ']' || c == '}';
     }
 
+    public static boolean isCaractereValido(char c) {
+        return Character.isDigit(c) || isOperador(c) || isCaractereDeAbertura(c) || isCaractereDeFechamento(c);
+    }
+
     // Limpando espaços da expressão para facilitar a validação.
     public static String limparEspacos(String string) {
         String expressao = "";
@@ -28,15 +32,14 @@ public class App {
     }
 
     public static boolean isValida(String string) {
-        // Se existir alguma letra na expressão, ela é inválida.
-        for (int i = 0; i < string.length(); i++) {
-            if (Character.isLetter(string.charAt(i)))
-                return false;
-        }
-
         String expressao = limparEspacos(string);
         Pilha pilha = new Pilha(expressao.length());
+        for (int i = 0; i < expressao.length(); i++) {
+            char c = expressao.charAt(i);
 
+            if (!isCaractereValido(c))
+                return false;
+        }
         if (expressao.isEmpty())
             return false;
         // Verifica se o primeiro caractere da string é um operador
@@ -52,7 +55,8 @@ public class App {
         for (int i = 0; i < expressao.length(); i++) {
             char c = expressao.charAt(i);
 
-            // Se o atual caractere for um operador e o caractere anterior também, a operação não é válida.
+            // Se o atual caractere for um operador e o caractere anterior também, a
+            // operação não é válida.
             if (isOperador(c) && isOperador(anterior))
                 return false;
 
@@ -60,12 +64,14 @@ public class App {
             if (isCaractereDeAbertura(c))
                 pilha.push(c);
 
-            // Se for um caractere de fechamento, verifica se o topo da pilha é o correspondente.
+            // Se for um caractere de fechamento, verifica se o topo da pilha é o
+            // correspondente.
             else if (isCaractereDeFechamento(c)) {
                 // Se a pilha estiver vazia, não há correspondência para o fechamento.
                 if (pilha.pilhaVazia())
                     return false;
-                // Buscamos o topo da pilha e verificamos se ele corresponde ao fechamento atual.
+                // Buscamos o topo da pilha e verificamos se ele corresponde ao fechamento
+                // atual.
                 char topo = pilha.buscarTopo();
 
                 // Verifica se os parênteses estão vazios.
