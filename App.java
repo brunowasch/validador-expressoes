@@ -1,5 +1,4 @@
 public class App {
-
     // Verifica se o caractere é um operador matemático.
     public static boolean isOperador(char c) {
         return c == '+' || c == '-' || c == '/' || c == '*';
@@ -15,87 +14,68 @@ public class App {
         return c == ')' || c == ']' || c == '}';
     }
 
+    // Verifica se o caractere é válido.
     public static boolean isCaractereValido(char c) {
         return Character.isDigit(c) || isOperador(c) || isCaractereDeAbertura(c) || isCaractereDeFechamento(c);
     }
 
-    // Limpando espaços da expressão para facilitar a validação.
-    public static String limparEspacos(String string) {
-        String expressao = "";
-        for (int i = 0; i < string.length(); i++) {
-            // Se o caractere atual não for um espaço, adiciona ele na expressão final.
-            if (string.charAt(i) != ' ')
-                expressao += string.charAt(i);
-        }
-        return expressao;
-    }
-
     public static boolean isValida(String string) {
-        String expressao = limparEspacos(string);
-        Pilha pilha = new Pilha(expressao.length());
-        for (int i = 0; i < expressao.length(); i++) {
-            char c = expressao.charAt(i);
 
-            if (!isCaractereValido(c))
-                return false;
-        }
-        if (expressao.isEmpty())
-            return false;
-        // Verifica se o primeiro caractere da string é um operador
-        if (isOperador(expressao.charAt(0)))
-            return false;
-        // Verifica se o último caractere da string é um operador
-        if (isOperador(expressao.charAt(expressao.length() - 1)))
+        // Cria a pilha de tamanho string.length() para comportar todos os caracteres.
+        Pilha pilha = new Pilha(string.length());
+
+        // Verifica se a expressão começa ou termina com operador.
+        if (isOperador(string.charAt(0)))
             return false;
 
-        // Variável para armazenar o caractere anterior, inicializada com um espaço.
+        if (isOperador(string.charAt(string.length() - 1)))
+            return false;
+
+        // Variável para armazenar o caractere anterior.
         char anterior = ' ';
 
-        for (int i = 0; i < expressao.length(); i++) {
-            char c = expressao.charAt(i);
+        // Loop para percorrer todos os caracteres da string.
+        for (int i = 0; i < string.length(); i++) {
+            char c = string.charAt(i);
 
-            // Se o atual caractere for um operador e o caractere anterior também, a operação não é válida.
-            if (isOperador(c) && isOperador(anterior))
+            if (c == ' ')
+                continue;
+
+            // Verifica se o caractere atual é válido.
+            if (!isCaractereValido(c))
                 return false;
 
-            // Se for um caractere de abertura, empilha ele.
+            // Se o caractere atual e o anterior forem operadores, retorna false.
+            if (i > 0 && isOperador(c) && isOperador(anterior))
+                return false;
+
+            // Se for um caractere de abertura, adiciona ele na pilha.
             if (isCaractereDeAbertura(c)) {
-                // Não permite multiplicação implícita, como em 5(3) ou (2)(3).
-                if (Character.isDigit(anterior) || isCaractereDeFechamento(anterior))
-                    return false;
                 pilha.push(c);
             }
 
-            // Se for um caractere de fechamento, verifica se o topo da pilha é o
-            // correspondente.
+            // Se for um caractere de fechamento, verifica se ele é válido.
             else if (isCaractereDeFechamento(c)) {
-                // Se a pilha estiver vazia, não há correspondência para o fechamento.
+
                 if (pilha.pilhaVazia())
                     return false;
-                // Buscamos o topo da pilha e verificamos se ele corresponde ao fechamento
-                // atual.
+
                 char topo = pilha.buscarTopo();
 
-                // Verifica se os parênteses estão vazios.
-                if (isCaractereDeAbertura(anterior))
-                    return false;
-
                 if (topo == '(' && c == ')' || topo == '[' && c == ']' || topo == '{' && c == '}')
-                    // Se corresponder, desempilha o topo.
                     pilha.pop();
                 else
                     return false;
             }
-            // Se o caractere atual for um operador e o caractere anterior for um caractere
-            // de abertura, a operação não é válida.
+
+            // Verifica se existe um operador após uma abertura.
             if (isOperador(c) && isCaractereDeAbertura(anterior))
                 return false;
-            // Se o caractere atual for um caractere de fechamento e o caractere anterior
-            // for um operador, a operação não é válida.
+
+            // Verifica se existe um operador antes de um fechamento.
             if (isCaractereDeFechamento(c) && isOperador(anterior))
                 return false;
 
-            // Atualizamos o caractere 'anterior' para o próximo loop.
             anterior = c;
         }
 
