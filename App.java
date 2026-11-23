@@ -118,10 +118,6 @@ public class App {
                 "5 + ( * 3)", // INVÁLIDA (operador após abertura)
                 "5 + (3 - )", // INVÁLIDA (fechamento após operador)
                 "{5 + [3 * (2 / 2)]}", // VÁLIDA
-                "5 3",
-             "(2)(3)",
-            "5 + (3)4",
-            "(5)3"
         };
 
         System.out.println("--- Validador de Expressões ---");
