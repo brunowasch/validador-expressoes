@@ -24,10 +24,7 @@ public class Pilha {
     }
 
     public boolean pilhaVazia() {
-        if (this.getTopo() == 0) 
-            return true;
-        else
-            return false;
+        return this.getTopo() == 0;
     }
 
     public char buscarTopo() {
