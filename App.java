@@ -55,14 +55,22 @@ public class App {
         for (int i = 0; i < expressao.length(); i++) {
             char c = expressao.charAt(i);
 
+            // Não permite operandos seguidos
+            if (Character.isDigit(c) && (Character.isDigit(anterior) || isCaractereDeFechamento(anterior)))
+                return false;
+
             // Se o atual caractere for um operador e o caractere anterior também, a
             // operação não é válida.
             if (isOperador(c) && isOperador(anterior))
                 return false;
 
             // Se for um caractere de abertura, empilha ele.
-            if (isCaractereDeAbertura(c))
+            if (isCaractereDeAbertura(c)) {
+                // Não permite multiplicação implícita, como em 5(3) ou (2)(3).
+                if (Character.isDigit(anterior) || isCaractereDeFechamento(anterior))
+                    return false;
                 pilha.push(c);
+            }
 
             // Se for um caractere de fechamento, verifica se o topo da pilha é o
             // correspondente.
@@ -109,7 +117,11 @@ public class App {
                 "5 + 3 -", // INVÁLIDA (termina com operador)
                 "5 + ( * 3)", // INVÁLIDA (operador após abertura)
                 "5 + (3 - )", // INVÁLIDA (fechamento após operador)
-                "{5 + [3 * (2 / 2)]}" // VÁLIDA
+                "{5 + [3 * (2 / 2)]}", // VÁLIDA
+                "5 3",
+             "(2)(3)",
+            "5 + (3)4",
+            "(5)3"
         };
 
         System.out.println("--- Validador de Expressões ---");
