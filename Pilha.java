@@ -39,8 +39,7 @@ public class Pilha {
             this.pilha[this.getTopo()] = elemento;
             this.topo++;
             return true;
-        }
-        else 
+        } else 
             return false;
     }
 
