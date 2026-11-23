@@ -20,7 +20,6 @@ public class App {
     }
 
     public static boolean isValida(String string) {
-
         // Cria a pilha de tamanho string.length() para comportar todos os caracteres.
         Pilha pilha = new Pilha(string.length());
 
